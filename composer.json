@@ -1,0 +1,27 @@
+{
+    "name": "amitdugar/img-opt",
+    "version": "0.0.1",
+    "description": "PHP image optimizer/delivery helper with AVIF/WebP support and CLI batch tool.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "amitdugar"
+        }
+    ],
+    "require": {
+        "php": ">=8.1",
+        "ext-imagick": "*",
+        "symfony/console": "^7.0",
+        "symfony/filesystem": "^7.0",
+        "symfony/finder": "^7.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "ImgOpt\\": "src/"
+        }
+    },
+    "bin": [
+        "bin/img-opt"
+    ]
+}

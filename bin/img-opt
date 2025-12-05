@@ -1,0 +1,19 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+use ImgOpt\Console\ImgOptCommand;
+use Symfony\Component\Console\Application;
+
+$autoload = __DIR__ . '/../vendor/autoload.php';
+if (!file_exists($autoload)) {
+    fwrite(STDERR, "Install dependencies with composer install\n");
+    exit(1);
+}
+require $autoload;
+
+$app = new Application('img-opt', '1.0.0');
+$app->add(new ImgOptCommand());
+$app->setDefaultCommand(ImgOptCommand::getDefaultName() ?? 'img-opt', true);
+$app->run();
