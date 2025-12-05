@@ -7,7 +7,7 @@ Reusable PHP helpers for image delivery and batch conversion with AVIF/WebP supp
 - Cloudflare helper for /cdn-cgi/image URLs and dev fallback
 
 Namespace: `ImgOpt`. Dependencies: PHP 8.1+, `ext-imagick`, Symfony Console/Filesystem/Finder.
-Versioning: Semantic Versioning (SemVer). Current initial tag: `0.0.1`.
+Versioning: Semantic Versioning (SemVer) via git tags (e.g., `0.0.1`).
 
 ## Install
 ```bash

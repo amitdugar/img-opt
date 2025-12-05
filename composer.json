@@ -1,6 +1,5 @@
 {
     "name": "amitdugar/img-opt",
-    "version": "0.0.1",
     "description": "PHP image optimizer/delivery helper with AVIF/WebP support and CLI batch tool.",
     "type": "library",
     "license": "MIT",
