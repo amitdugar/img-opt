@@ -29,15 +29,19 @@ jobs:
   packagist:
     needs: [php]
     runs-on: ubuntu-latest
+    env:
+      PACKAGIST_USERNAME: amitdugar
+      PACKAGIST_TOKEN: ${{ secrets.PACKAGIST_TOKEN }}
+      REPO_URL: "${{ github.server_url }}/${{ github.repository }}"
     steps:
       - name: Trigger Packagist update
-        env:
-          PACKAGIST_USERNAME: amitdugar
-          PACKAGIST_TOKEN: ${{ secrets.PACKAGIST_TOKEN }}
-          REPO_URL: "${{ github.server_url }}/${{ github.repository }}"
+        if: env.PACKAGIST_TOKEN != ''
         run: |
           set -euo pipefail
           curl -sSf -XPOST \
             -H "Content-Type: application/json" \
             -d "{\"repository\":{\"url\":\"${REPO_URL}\"}}" \
             "https://packagist.org/api/update-package?username=${PACKAGIST_USERNAME}&apiToken=${PACKAGIST_TOKEN}"
+      - name: Skip Packagist (no token set)
+        if: env.PACKAGIST_TOKEN == ''
+        run: echo "PACKAGIST_TOKEN not set; skipping Packagist update."
