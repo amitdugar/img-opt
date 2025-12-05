@@ -35,7 +35,9 @@ final class ImageProcessor
 
         $resizeWidth = $targetWidth > 0 ? $targetWidth : 0;
         if ($resizeWidth > 0 && $image->getImageWidth() > $resizeWidth) {
-            $image->resizeImage($resizeWidth, 0, Imagick::FILTER_LANCZOS, 1, true);
+            $ratio = $image->getImageHeight() / $image->getImageWidth();
+            $resizeHeight = (int) round($resizeWidth * $ratio);
+            $image->resizeImage($resizeWidth, $resizeHeight, Imagick::FILTER_LANCZOS, 1);
         }
 
         $this->encode($image, $format, $quality);
