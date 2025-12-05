@@ -9,11 +9,11 @@
         }
     ],
     "require": {
-        "php": ">=8.1",
+        "php": ">=8.2",
         "ext-imagick": "*",
-        "symfony/console": "^7.0",
-        "symfony/filesystem": "^7.0",
-        "symfony/finder": "^7.0"
+        "symfony/console": "^6.4",
+        "symfony/filesystem": "^6.4",
+        "symfony/finder": "^6.4"
     },
     "autoload": {
         "psr-4": {
