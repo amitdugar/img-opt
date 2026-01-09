@@ -85,3 +85,11 @@ php vendor/bin/img-opt <folder> [--max-width N] [--q-avif N] [--q-webp N] [--for
 ## Troubleshooting
 - Ensure Imagick is built with WebP/AVIF: `php -r "var_dump((new Imagick())->queryFormats('WEBP'));"`
 - If AVIF is unavailable, install `libheif` + rebuild Imagick (varies by distro). The library will automatically downgrade formats.***
+
+## SVG optimization (optional)
+If you want smaller SVGs, consider running [SVGO](https://github.com/svg/svgo) as a separate step (SVGs are served as-is and not converted by ImgOpt).
+
+Example (one-off):
+```
+npx svgo -f public/assets/img -r
+```
