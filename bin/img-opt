@@ -6,11 +6,24 @@ declare(strict_types=1);
 use ImgOpt\Console\ImgOptCommand;
 use Symfony\Component\Console\Application;
 
-$autoload = __DIR__ . '/../vendor/autoload.php';
-if (!file_exists($autoload)) {
+$autoloadCandidates = [
+    __DIR__ . '/../vendor/autoload.php', // running from repo root
+    __DIR__ . '/../autoload.php', // running from vendor/bin
+];
+
+$autoload = null;
+foreach ($autoloadCandidates as $candidate) {
+    if (file_exists($candidate)) {
+        $autoload = $candidate;
+        break;
+    }
+}
+
+if ($autoload === null) {
     fwrite(STDERR, "Install dependencies with composer install\n");
     exit(1);
 }
+
 require $autoload;
 
 $app = new Application('img-opt', '1.0.0');

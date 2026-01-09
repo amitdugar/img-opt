@@ -65,8 +65,9 @@ echo $cf->img(
 
 ## CLI (bulk conversion)
 ```
-./vendor/bin/img-opt <folder> [--max-width N] [--q-avif N] [--q-webp N] [--formats avif,webp] [--force] [--dry-run] [--cache-dir DIR]
+php bin/img-opt <folder> [--max-width N] [--q-avif N] [--q-webp N] [--formats avif,webp] [--force] [--dry-run] [--cache-dir DIR]
 ```
+- If installed via Composer in another project, use `php vendor/bin/img-opt ...`.
 - Converts PNG/JPG recursively, writing AVIF/WebP variants into `cache-dir` (defaults to `<folder>/_img-opt`).
 - Skips fresh outputs unless `--force` is set. Use `--dry-run` to preview.
 
