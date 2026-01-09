@@ -23,6 +23,7 @@ final class TagHelper
     {
         $uniqueWidths = array_values(array_unique(array_map('intval', $widths)));
         sort($uniqueWidths);
+        $sourceWeb = $this->service->publicPath($sourcePath);
 
         $accept = strtolower($acceptHeader);
         $acceptsAvif = $accept === '' || str_contains($accept, 'image/avif');
@@ -46,13 +47,13 @@ final class TagHelper
         $fallbackSrcset = $this->buildSrcset($sourcePath, $uniqueWidths, $fallbackFormat);
         $fallbackWidth = $uniqueWidths ? end($uniqueWidths) : 0;
         $fallback = $fallbackWidth > 0
-            ? $this->escape($this->service->ensureVariant($sourcePath, $fallbackWidth, '', $fallbackFormat))
-            : $this->escape($sourcePath);
+            ? $this->escape($this->service->publicPath($this->service->ensureVariant($sourcePath, $fallbackWidth, '', $fallbackFormat)))
+            : $this->escape($sourceWeb);
 
         $attrString = $this->attributes(array_merge([
             'srcset' => $fallbackSrcset,
             'sizes'  => $sizes,
-            'src'    => $fallback ? explode(' ', $fallback)[0] : $this->escape($sourcePath),
+            'src'    => $fallback ? explode(' ', $fallback)[0] : $this->escape($sourceWeb),
             'loading' => 'lazy',
         ], $imgAttributes));
 
@@ -90,7 +91,7 @@ final class TagHelper
         $srcsetParts = [];
         foreach ($widths as $w) {
             $variant = $this->service->ensureVariant($sourcePath, $w, '', $format);
-            $srcsetParts[] = $this->escape($variant) . ' ' . $w . 'w';
+            $srcsetParts[] = $this->escape($this->service->publicPath($variant)) . ' ' . $w . 'w';
         }
 
         return implode(', ', $srcsetParts);

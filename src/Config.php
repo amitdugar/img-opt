@@ -9,6 +9,7 @@ final class Config
     public const DEFAULT_BREAKPOINTS = [480, 768, 1080, 1440, 1920];
 
     public string $cacheRoot;
+    public string $publicRoot;
     public array $breakpoints;
     public array $quality; // ['avif' => int, 'webp' => int, 'jpeg' => int, 'png' => int]
     public int $maxWidth;
@@ -16,6 +17,7 @@ final class Config
     /**
      * @param array{
      *   cache_root?:string,
+     *   public_root?:string,
      *   breakpoints?:int[],
      *   quality?:array{avif?:int,webp?:int,jpeg?:int,png?:int},
      *   max_width?:int
@@ -25,6 +27,7 @@ final class Config
     {
         $instance = new self();
         $instance->cacheRoot = rtrim($options['cache_root'] ?? sys_get_temp_dir() . '/img-opt-cache', '/');
+        $instance->publicRoot = rtrim($options['public_root'] ?? '', '/');
         $instance->breakpoints = array_values(array_unique(array_map('intval', $options['breakpoints'] ?? self::DEFAULT_BREAKPOINTS)));
         sort($instance->breakpoints);
 

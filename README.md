@@ -21,6 +21,7 @@ use ImgOpt\ImgOpt;
 
 $config = Config::fromArray([
     'cache_root' => __DIR__ . '/public/_img-opt-cache',
+    'public_root' => __DIR__ . '/public',
     'max_width'  => 0, // keep original unless a smaller width is requested
     'quality'    => ['avif' => 42, 'webp' => 80, 'jpeg' => 82],
 ]);

@@ -23,6 +23,7 @@ final class ImgOpt
 
     public static function fromConfig(Config $config, string $publicPath, bool $useCloudflare = false, ?CloudflareImage $cloudflare = null): self
     {
+        $config->publicRoot = rtrim($publicPath, '/');
         $service = new ImageService($config);
 
         if ($useCloudflare && $cloudflare === null) {

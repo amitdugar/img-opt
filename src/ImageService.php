@@ -57,6 +57,24 @@ final class ImageService
         return $this->capabilities->supports($fmt);
     }
 
+    public function publicPath(string $absolutePath): string
+    {
+        $publicRoot = rtrim($this->config->publicRoot ?? '', '/');
+        if ($publicRoot === '') {
+            return $absolutePath;
+        }
+
+        if (str_starts_with($absolutePath, $publicRoot . '/')) {
+            return '/' . ltrim(substr($absolutePath, strlen($publicRoot)), '/');
+        }
+
+        if ($absolutePath === $publicRoot) {
+            return '/';
+        }
+
+        return $absolutePath;
+    }
+
     /**
      * Determine best quality for format.
      */
