@@ -38,7 +38,7 @@ echo $helper->picture(
 );
 ```
 
-- The helper will pick AVIF if supported, otherwise WebP, otherwise JPEG/PNG, and cache the generated variants under `cache_root`.
+- The helper emits a `<picture>` with AVIF/WebP sources when Imagick supports them (and the `Accept` header allows them), then falls back to the original format. Variants are generated on demand under `cache_root`.
 - `ImageService::ensureVariant($source, $width, $acceptHeader, $forceFormat)` is available if you just need the cached file path.
 
 ## Cloudflare Image Resizing helper
@@ -71,7 +71,7 @@ echo $cf->img(
 - Skips fresh outputs unless `--force` is set. Use `--dry-run` to preview.
 
 ## Design notes
-- AVIF/WebP capability is auto-detected from Imagick. If AVIF is missing, it falls back to WebP → JPEG/PNG.
+- AVIF/WebP capability is auto-detected from Imagick. If AVIF is missing, it falls back to WebP → JPEG/PNG, and if the `Accept` header is empty it still prefers AVIF/WebP when available.
 - Cache keys include the source path + mtime + width + format + quality, so updates to the original regenerate variants.
 - Width requests are clamped to avoid upscaling and can be capped via `max_width`.
 - Minimal, maintained dependencies: Symfony Console/Filesystem/Finder; image work uses `ext-imagick`.

@@ -9,6 +9,7 @@ use ImgOpt\Config;
 use ImgOpt\ImageProcessor;
 use ImgOpt\VariantCache;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -16,13 +17,14 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Finder\Finder;
 
+#[AsCommand(name: 'img-opt')]
 final class ImgOptCommand extends Command
 {
-    protected static $defaultName = 'img-opt';
 
     protected function configure(): void
     {
         $this
+            ->setName('img-opt')
             ->setDescription('Batch convert PNG/JPG to AVIF + WebP with freshness checks.')
             ->addArgument('folder', InputArgument::REQUIRED, 'Folder to scan')
             ->addOption('max-width', null, InputOption::VALUE_REQUIRED, 'Resize down to width (0 keep original)', '0')
@@ -30,7 +32,7 @@ final class ImgOptCommand extends Command
             ->addOption('q-webp', null, InputOption::VALUE_REQUIRED, 'WebP quality', '80')
             ->addOption('formats', null, InputOption::VALUE_REQUIRED, 'Comma list: avif,webp', 'avif,webp')
             ->addOption('force', 'f', InputOption::VALUE_NONE, 'Re-encode even if outputs are fresh')
-            ->addOption('dry-run', 'n', InputOption::VALUE_NONE, 'Show actions without writing files')
+            ->addOption('dry-run', 'd', InputOption::VALUE_NONE, 'Show actions without writing files')
             ->addOption('cache-dir', null, InputOption::VALUE_REQUIRED, 'Cache/output directory (default: <folder>/_img-opt)', '')
         ;
     }

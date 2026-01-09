@@ -43,6 +43,20 @@ final class ImageService
         return $target;
     }
 
+    public function supportsFormat(string $format): bool
+    {
+        if (!$this->capabilities->isImagickAvailable()) {
+            return false;
+        }
+
+        $fmt = strtolower($format);
+        if (in_array($fmt, ['jpeg', 'jpg', 'png'], true)) {
+            return true;
+        }
+
+        return $this->capabilities->supports($fmt);
+    }
+
     /**
      * Determine best quality for format.
      */

@@ -34,10 +34,10 @@ final class Capabilities
     public function bestFormatForAccept(string $acceptHeader): string
     {
         $accept = strtolower($acceptHeader);
-        if ($this->supports('AVIF') && str_contains($accept, 'image/avif')) {
+        if ($this->supports('AVIF') && ($accept === '' || str_contains($accept, 'image/avif'))) {
             return 'avif';
         }
-        if ($this->supports('WEBP') && str_contains($accept, 'image/webp')) {
+        if ($this->supports('WEBP') && ($accept === '' || str_contains($accept, 'image/webp'))) {
             return 'webp';
         }
 
