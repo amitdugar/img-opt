@@ -64,16 +64,26 @@ final class ImageService
     public function publicPath(string $absolutePath): string
     {
         $publicRoot = rtrim($this->config->publicRoot ?? '', '/');
-        if ($publicRoot === '') {
+        $cdnBase = rtrim($this->config->cdnBase ?? '', '/');
+        if ($absolutePath === '') {
             return $absolutePath;
         }
 
-        if (str_starts_with($absolutePath, $publicRoot . '/')) {
-            return '/' . ltrim(substr($absolutePath, strlen($publicRoot)), '/');
+        if (preg_match('#^https?://#i', $absolutePath)) {
+            return $absolutePath;
         }
 
-        if ($absolutePath === $publicRoot) {
-            return '/';
+        if ($publicRoot !== '' && str_starts_with($absolutePath, $publicRoot . '/')) {
+            $web = '/' . ltrim(substr($absolutePath, strlen($publicRoot)), '/');
+            return $cdnBase !== '' ? $cdnBase . $web : $web;
+        }
+
+        if ($publicRoot !== '' && $absolutePath === $publicRoot) {
+            return $cdnBase !== '' ? $cdnBase . '/' : '/';
+        }
+
+        if ($absolutePath[0] === '/') {
+            return $cdnBase !== '' ? $cdnBase . $absolutePath : $absolutePath;
         }
 
         return $absolutePath;

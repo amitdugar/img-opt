@@ -22,6 +22,7 @@ use ImgOpt\ImgOpt;
 $config = Config::fromArray([
     'cache_root' => __DIR__ . '/public/_imgcache',
     'public_root' => __DIR__ . '/public',
+    'cdn_base' => getenv('CDN_BASE') ?: '',
     'max_width'  => 0, // keep original unless a smaller width is requested
     'quality'    => ['avif' => 42, 'webp' => 80, 'jpeg' => 82],
 ]);
@@ -44,6 +45,7 @@ echo $imgopt->picture(
 
 - The helper emits a `<picture>` with AVIF/WebP sources when Imagick supports them (and the `Accept` header allows them), then falls back to the original format. Variants are generated on demand under `cache_root`.
 - `ImageService::ensureVariant($source, $width, $acceptHeader, $forceFormat)` is available if you just need the cached file path.
+- Set `cdn_base` to rewrite URLs to a CDN host (e.g., `https://cdn.example.com`).
 
 ## Cloudflare Image Resizing helper
 If `useCloudflare` is enabled in `ImgOpt::fromConfig`, the same `$imgopt->picture()` call will emit Cloudflare URLs instead of local variants.
