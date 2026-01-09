@@ -65,6 +65,7 @@ final class ImgOptCommand extends Command
         ]);
         $caps = new Capabilities();
         $cache = new VariantCache($config->cacheRoot);
+        $cache->ensureDirectory();
         $processor = new ImageProcessor($config, $caps);
 
         $supportedFormats = array_filter($formats, fn ($fmt) => $this->isAllowed($fmt, $caps));
@@ -84,6 +85,7 @@ final class ImgOptCommand extends Command
         $created = ['avif' => 0, 'webp' => 0];
         $skipped = 0;
         $bad = 0;
+        $errors = [];
         $io->progressStart($total);
 
         foreach ($finder as $file) {
@@ -114,6 +116,9 @@ final class ImgOptCommand extends Command
                     $created[$fmt]++;
                 } catch (\Throwable $e) {
                     $bad++;
+                    if ($output->isVerbose()) {
+                        $errors[] = sprintf('%s (%s): %s', $src, $fmt, $e->getMessage());
+                    }
                 }
             }
         }
@@ -129,6 +134,10 @@ final class ImgOptCommand extends Command
             sprintf('Failed    : %d', $bad),
             sprintf('Cache dir : %s', $cacheDir),
         ]);
+        if ($errors !== []) {
+            $io->section('Errors (first 10)');
+            $io->listing(array_slice($errors, 0, 10));
+        }
 
         return Command::SUCCESS;
     }
