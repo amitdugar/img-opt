@@ -29,6 +29,10 @@ final class ImageService
      */
     public function ensureVariant(string $source, int $width, string $acceptHeader = '', ?string $forceFormat = null): string
     {
+        if ($this->isSvg($source)) {
+            return $source;
+        }
+
         $format = $forceFormat ? strtolower($forceFormat) : $this->capabilities->bestFormatForAccept($acceptHeader);
         $format = $this->normalizeFormat($format, $source);
         $quality = $this->qualityFor($format);
@@ -124,5 +128,11 @@ final class ImageService
         }
 
         return $req;
+    }
+
+    private function isSvg(string $source): bool
+    {
+        $ext = strtolower(pathinfo($source, PATHINFO_EXTENSION));
+        return $ext === 'svg' || $ext === 'svgz';
     }
 }

@@ -33,7 +33,7 @@ final class ImgOptCommand extends Command
             ->addOption('formats', null, InputOption::VALUE_REQUIRED, 'Comma list: avif,webp', 'avif,webp')
             ->addOption('force', 'f', InputOption::VALUE_NONE, 'Re-encode even if outputs are fresh')
             ->addOption('dry-run', 'd', InputOption::VALUE_NONE, 'Show actions without writing files')
-            ->addOption('cache-dir', null, InputOption::VALUE_REQUIRED, 'Cache/output directory (default: <folder>/_img-opt)', '')
+            ->addOption('cache-dir', null, InputOption::VALUE_REQUIRED, 'Cache/output directory (default: <folder>/_imgcache)', '')
         ;
     }
 
@@ -55,7 +55,7 @@ final class ImgOptCommand extends Command
         }
 
         if ($cacheDir === '') {
-            $cacheDir = rtrim($folder, '/') . '/_img-opt';
+            $cacheDir = rtrim($folder, '/') . '/_imgcache';
         }
 
         $config = Config::fromArray([
@@ -68,7 +68,7 @@ final class ImgOptCommand extends Command
         $cache->ensureDirectory();
         $processor = new ImageProcessor($config, $caps);
 
-        $supportedFormats = array_filter($formats, fn ($fmt) => $this->isAllowed($fmt, $caps));
+        $supportedFormats = array_filter($formats, fn($fmt) => $this->isAllowed($fmt, $caps));
         if (empty($supportedFormats)) {
             $io->warning('No supported formats detected; defaulting to original JPEG/PNG only.');
             $supportedFormats = [];

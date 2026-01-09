@@ -20,7 +20,7 @@ use ImgOpt\Config;
 use ImgOpt\ImgOpt;
 
 $config = Config::fromArray([
-    'cache_root' => __DIR__ . '/public/_img-opt-cache',
+    'cache_root' => __DIR__ . '/public/_imgcache',
     'public_root' => __DIR__ . '/public',
     'max_width'  => 0, // keep original unless a smaller width is requested
     'quality'    => ['avif' => 42, 'webp' => 80, 'jpeg' => 82],
@@ -73,7 +73,7 @@ echo $cf->img(
 php bin/img-opt <folder> [--max-width N] [--q-avif N] [--q-webp N] [--formats avif,webp] [--force] [--dry-run] [--cache-dir DIR]
 php vendor/bin/img-opt <folder> [--max-width N] [--q-avif N] [--q-webp N] [--formats avif,webp] [--force] [--dry-run] [--cache-dir DIR]
 ```
-- Converts PNG/JPG recursively, writing AVIF/WebP variants into `cache-dir` (defaults to `<folder>/_img-opt`).
+- Converts PNG/JPG recursively, writing AVIF/WebP variants into `cache-dir` (defaults to `<folder>/_imgcache`).
 - Skips fresh outputs unless `--force` is set. Use `--dry-run` to preview.
 
 ## Design notes

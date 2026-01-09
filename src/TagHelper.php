@@ -24,6 +24,14 @@ final class TagHelper
         $uniqueWidths = array_values(array_unique(array_map('intval', $widths)));
         sort($uniqueWidths);
         $sourceWeb = $this->service->publicPath($sourcePath);
+        if ($this->isSvg($sourcePath)) {
+            $attrString = $this->attributes(array_merge([
+                'src' => $this->escape($sourceWeb),
+                'loading' => 'lazy',
+            ], $imgAttributes));
+
+            return sprintf('<img %s>', $attrString);
+        }
 
         $accept = strtolower($acceptHeader);
         $acceptsAvif = $accept === '' || str_contains($accept, 'image/avif');
@@ -107,5 +115,11 @@ final class TagHelper
             'jpg', 'jpeg' => 'jpeg',
             default => 'jpeg',
         };
+    }
+
+    private function isSvg(string $sourcePath): bool
+    {
+        $ext = strtolower(pathinfo($sourcePath, PATHINFO_EXTENSION));
+        return $ext === 'svg' || $ext === 'svgz';
     }
 }
