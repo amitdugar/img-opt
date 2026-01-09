@@ -17,19 +17,22 @@ composer require amitdugar/img-opt
 ## Quick start (PHP)
 ```php
 use ImgOpt\Config;
-use ImgOpt\ImageService;
-use ImgOpt\TagHelper;
+use ImgOpt\ImgOpt;
 
 $config = Config::fromArray([
     'cache_root' => __DIR__ . '/public/_img-opt-cache',
     'max_width'  => 0, // keep original unless a smaller width is requested
     'quality'    => ['avif' => 42, 'webp' => 80, 'jpeg' => 82],
 ]);
-$service = new ImageService($config);
-$helper  = new TagHelper($service);
+
+$imgopt = ImgOpt::fromConfig(
+    $config,
+    publicPath: __DIR__ . '/public',
+    useCloudflare: getenv('CF_ENABLED') === '1'
+);
 
 // Generate variants and emit a <picture> tag with srcset
-echo $helper->picture(
+echo $imgopt->picture(
     __DIR__ . '/public/img/photo.jpg',
     [480, 768, 1080, 1600],
     $_SERVER['HTTP_ACCEPT'] ?? '',
@@ -42,6 +45,7 @@ echo $helper->picture(
 - `ImageService::ensureVariant($source, $width, $acceptHeader, $forceFormat)` is available if you just need the cached file path.
 
 ## Cloudflare Image Resizing helper
+If `useCloudflare` is enabled in `ImgOpt::fromConfig`, the same `$imgopt->picture()` call will emit Cloudflare URLs instead of local variants.
 ```php
 use ImgOpt\CloudflareImage;
 
