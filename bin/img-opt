@@ -9,7 +9,7 @@ use Symfony\Component\Console\Application;
 $autoloadCandidates = [
     __DIR__ . '/../vendor/autoload.php', // running from repo root
     __DIR__ . '/../autoload.php', // running from vendor/bin
-    __DIR__ . '/../../autoload.php', // running from vendor/amitdugar/img-opt/bin
+    __DIR__ . '/../../../autoload.php', // running from vendor/amitdugar/img-opt/bin
 ];
 
 $autoload = null;
