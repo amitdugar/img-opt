@@ -21,7 +21,7 @@ use ImgOpt\ImageService;
 use ImgOpt\TagHelper;
 
 $config = Config::fromArray([
-    'cache_root' => __DIR__ . '/storage/img-cache',
+    'cache_root' => __DIR__ . '/public/_img-opt-cache',
     'max_width'  => 0, // keep original unless a smaller width is requested
     'quality'    => ['avif' => 42, 'webp' => 80, 'jpeg' => 82],
 ]);
