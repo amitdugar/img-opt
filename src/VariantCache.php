@@ -21,7 +21,8 @@ final class VariantCache
     {
         $hash = $this->hash($source, $width, $format, $quality);
         $ext = strtolower($format);
-        $basename = sprintf('%s-w%d.%s', $hash, $width, $ext);
+        $readable = $this->readableName($source);
+        $basename = sprintf('%s-w%d-q%d-%s.%s', $readable, $width, $quality, $hash, $ext);
         return $this->cacheRoot . '/' . $basename;
     }
 
@@ -37,5 +38,32 @@ final class VariantCache
         $mtime = @filemtime($source) ?: 0;
         $payload = implode('|', [$source, $mtime, $width, strtolower($format), $quality]);
         return substr(sha1($payload), 0, 16);
+    }
+
+    private function readableName(string $source): string
+    {
+        $clean = preg_split('/[?#]/', $source, 2)[0] ?? $source;
+        $ext = strtolower(pathinfo($clean, PATHINFO_EXTENSION));
+        $base = pathinfo($clean, PATHINFO_FILENAME);
+        $parent = basename(dirname($clean));
+
+        $parts = [];
+        if ($parent !== '' && $parent !== '.' && $parent !== DIRECTORY_SEPARATOR) {
+            $parts[] = $parent;
+        }
+        if ($base !== '') {
+            $parts[] = $base;
+        } elseif ($ext !== '') {
+            $parts[] = $ext;
+        } else {
+            $parts[] = 'image';
+        }
+
+        $name = implode('-', $parts);
+        $name = strtolower($name);
+        $name = preg_replace('/[^a-z0-9._-]+/', '-', $name) ?? 'image';
+        $name = trim($name, '-.');
+
+        return $name !== '' ? $name : 'image';
     }
 }
