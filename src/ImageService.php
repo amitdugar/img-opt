@@ -47,6 +47,17 @@ final class ImageService
         return $target;
     }
 
+    /**
+     * Ensure a cached variant exists and return its public (web/CDN) URL.
+     *
+     * Equivalent to publicPath(ensureVariant(...)); use this when you need the URL to serve
+     * rather than the filesystem path, so the generated file and the URL never diverge.
+     */
+    public function cachedUrl(string $source, int $width, string $acceptHeader = '', ?string $forceFormat = null): string
+    {
+        return $this->publicPath($this->ensureVariant($source, $width, $acceptHeader, $forceFormat));
+    }
+
     public function supportsFormat(string $format): bool
     {
         if (!$this->capabilities->isImagickAvailable()) {
