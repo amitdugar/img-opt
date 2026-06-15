@@ -28,6 +28,14 @@ if ($autoload === null) {
 require $autoload;
 
 $app = new Application('img-opt', '1.0.0');
-$app->add(new ImgOptCommand());
-$app->setDefaultCommand(ImgOptCommand::getDefaultName() ?? 'img-opt', true);
+
+$command = new ImgOptCommand();
+// Symfony 7.4+ renamed Application::add() to addCommand(); add() is removed in 8.0.
+if (method_exists($app, 'addCommand')) {
+    $app->addCommand($command);
+} else {
+    $app->add($command);
+}
+
+$app->setDefaultCommand('img-opt', true);
 $app->run();
