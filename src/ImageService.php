@@ -48,14 +48,14 @@ final class ImageService
      * Equivalent to publicPath(ensureVariant(...)); use this when you need the URL to serve
      * rather than the filesystem path, so the generated file and the URL never diverge.
      */
-    public function cachedUrl(string $source, int $width, string $acceptHeader = '', ?string $forceFormat = null): string
+    public function ensureUrl(string $source, int $width, string $acceptHeader = '', ?string $forceFormat = null): string
     {
         return $this->publicPath($this->ensureVariant($source, $width, $acceptHeader, $forceFormat));
     }
 
     /**
      * Public URL of an ALREADY-CACHED variant, or null if it hasn't been generated yet.
-     * NEVER generates (unlike cachedUrl()/ensureVariant()).
+     * NEVER generates (unlike ensureUrl()/ensureVariant()).
      *
      * For hot paths that render many images and must not pay generation cost (e.g. a
      * 400-item product grid) — callers fall back to the original on null. The target is keyed

@@ -55,7 +55,7 @@ final class TagHelper
         $fallbackSrcset = $this->buildSrcset($sourcePath, $uniqueWidths, $fallbackFormat);
         $fallbackWidth = $uniqueWidths ? end($uniqueWidths) : 0;
         $fallback = $fallbackWidth > 0
-            ? $this->escape($this->service->cachedUrl($sourcePath, $fallbackWidth, '', $fallbackFormat))
+            ? $this->escape($this->service->ensureUrl($sourcePath, $fallbackWidth, '', $fallbackFormat))
             : $this->escape($sourceWeb);
 
         $attrString = $this->attributes(array_merge([
@@ -98,7 +98,7 @@ final class TagHelper
 
         $srcsetParts = [];
         foreach ($widths as $w) {
-            $url = $this->service->cachedUrl($sourcePath, $w, '', $format);
+            $url = $this->service->ensureUrl($sourcePath, $w, '', $format);
             $srcsetParts[] = $this->escape($url) . ' ' . $w . 'w';
         }
 
