@@ -18,7 +18,7 @@ final class ImageService
     {
         $this->config = $config;
         $this->capabilities = $capabilities ?? new Capabilities();
-        $this->cache = $cache ?? new VariantCache($config->cacheRoot);
+        $this->cache = $cache ?? new VariantCache($config->cacheRoot, null, $config->publicRoot);
         $this->processor = $processor ?? new ImageProcessor($config, $this->capabilities);
         $this->fs = $fs ?? new Filesystem();
         $this->cache->ensureDirectory();

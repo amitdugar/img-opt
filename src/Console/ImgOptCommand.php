@@ -64,7 +64,7 @@ final class ImgOptCommand extends Command
             'quality' => ['avif' => $qAvif, 'webp' => $qWebp],
         ]);
         $caps = new Capabilities();
-        $cache = new VariantCache($config->cacheRoot);
+        $cache = new VariantCache($config->cacheRoot, null, realpath($folder) ?: $folder);
         $cache->ensureDirectory();
         $processor = new ImageProcessor($config, $caps);
 

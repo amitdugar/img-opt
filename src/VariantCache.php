@@ -9,12 +9,20 @@ use Symfony\Component\Filesystem\Filesystem;
 final class VariantCache
 {
     private string $cacheRoot;
+    private string $baseRoot;
     private Filesystem $fs;
 
-    public function __construct(string $cacheRoot, ?Filesystem $fs = null)
+    /**
+     * @param string $baseRoot Optional root the source paths live under. When set, the cache
+     *                         identity is derived from the path relative to this root, so the
+     *                         same image yields the same variant name regardless of where the
+     *                         project is checked out on disk. Leave empty to use the full path.
+     */
+    public function __construct(string $cacheRoot, ?Filesystem $fs = null, string $baseRoot = '')
     {
         $this->cacheRoot = rtrim($cacheRoot, '/');
         $this->fs = $fs ?? new Filesystem();
+        $this->baseRoot = rtrim($baseRoot, '/');
     }
 
     public function getPath(string $source, int $width, string $format, int $quality): string
@@ -36,8 +44,23 @@ final class VariantCache
     private function hash(string $source, int $width, string $format, int $quality): string
     {
         $mtime = @filemtime($source) ?: 0;
-        $payload = implode('|', [$source, $mtime, $width, strtolower($format), $quality]);
+        $identity = $this->relativeIdentity($source);
+        $payload = implode('|', [$identity, $mtime, $width, strtolower($format), $quality]);
         return substr(sha1($payload), 0, 16);
+    }
+
+    /**
+     * Path used to identify the source for hashing. Relative to baseRoot when the source lives
+     * under it (so names are stable across checkout locations); otherwise the cleaned full path.
+     */
+    private function relativeIdentity(string $source): string
+    {
+        $clean = preg_split('/[?#]/', $source, 2)[0] ?? $source;
+        if ($this->baseRoot !== '' && str_starts_with($clean, $this->baseRoot . '/')) {
+            return ltrim(substr($clean, strlen($this->baseRoot)), '/');
+        }
+
+        return $clean;
     }
 
     private function readableName(string $source): string
