@@ -33,12 +33,7 @@ final class ImageService
             return $source;
         }
 
-        $format = $forceFormat ? strtolower($forceFormat) : $this->capabilities->bestFormatForAccept($acceptHeader);
-        $format = $this->normalizeFormat($format, $source);
-        $quality = $this->qualityFor($format);
-        $safeWidth = $this->clampWidth($source, $width);
-
-        $target = $this->cache->getPath($source, $safeWidth, $format, $quality);
+        [$target, $format, $quality, $safeWidth] = $this->resolveTarget($source, $width, $acceptHeader, $forceFormat);
         if ($this->fs->exists($target)) {
             return $target;
         }
@@ -56,6 +51,43 @@ final class ImageService
     public function cachedUrl(string $source, int $width, string $acceptHeader = '', ?string $forceFormat = null): string
     {
         return $this->publicPath($this->ensureVariant($source, $width, $acceptHeader, $forceFormat));
+    }
+
+    /**
+     * Public URL of an ALREADY-CACHED variant, or null if it hasn't been generated yet.
+     * NEVER generates (unlike cachedUrl()/ensureVariant()).
+     *
+     * For hot paths that render many images and must not pay generation cost (e.g. a
+     * 400-item product grid) — callers fall back to the original on null. The target is keyed
+     * exactly the way ensureVariant() keys it (same format/quality/width clamping), so a hit
+     * here guarantees the file ensureVariant() would have produced.
+     */
+    public function warmedUrl(string $source, int $width, string $acceptHeader = '', ?string $forceFormat = null): ?string
+    {
+        // SVGs are served as-is (never cached/generated), so they are always "warm".
+        if ($this->isSvg($source)) {
+            return $this->publicPath($source);
+        }
+
+        [$target] = $this->resolveTarget($source, $width, $acceptHeader, $forceFormat);
+        return is_file($target) ? $this->publicPath($target) : null;
+    }
+
+    /**
+     * Resolve the cache target for a source the exact same way generation does, so lookups and
+     * writes always agree on the filename.
+     *
+     * @return array{0:string,1:string,2:int,3:int} [targetPath, format, quality, clampedWidth]
+     */
+    private function resolveTarget(string $source, int $width, string $acceptHeader, ?string $forceFormat): array
+    {
+        $format = $forceFormat ? strtolower($forceFormat) : $this->capabilities->bestFormatForAccept($acceptHeader);
+        $format = $this->normalizeFormat($format, $source);
+        $quality = $this->qualityFor($format);
+        $safeWidth = $this->clampWidth($source, $width);
+        $target = $this->cache->getPath($source, $safeWidth, $format, $quality);
+
+        return [$target, $format, $quality, $safeWidth];
     }
 
     public function supportsFormat(string $format): bool
